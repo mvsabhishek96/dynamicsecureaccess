@@ -1,12 +1,54 @@
-Dynamic Secure Access Control and Data Sharing Through Trusted Delegation and Revocation in a Blockchain-Enabled Cloud-IoT Environment
+Cloud Node
+-------
+Login
+View IOT Users, 
+View IOT Device, 
+View Data Blocks, 
+View All Data Requested Users, 
+View Time Delay Results, 
+View Throughput Results.
+ 
+
+Edge Node
+-------
+Login,
+View Requested Data Access Permission. 
 
 
-IOT Device --Data Owners
+IOT Device
+-------
+Login,
+Upload Data Blocks.
 
-IOT Users  -- Data Users
 
-Gateway -- Capturing Attacks
+IOT User
+-------
+Register and Login,
+Search File Data,
+Request Data Access Permission,
+Download Data.
 
-Edge Nodes -- To Provide access Control
+Gateway
+-------
+Login,
+View All Revocated Users By Gateway.
 
-Cloud Node -- Data Storage
+
+
+
+Members
+--------
+
+File Name,
+Owner Name,
+Block1,
+Hash-1,
+Block2,
+Hash-2,
+Block3,
+Hash-3,
+Block4,
+Hash-4,
+SK.
+
+
