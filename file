@@ -1,0 +1,1447 @@
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
+public class IOTDeviceServer extends JFrame implements ActionListener {
+	Container c;
+	JLabel g1, g2;
+	Font f1 = new Font("Times New Roman", Font.BOLD, 22);
+	Font f2 = new Font("Times New Roman", Font.BOLD, 18);
+	Font f3 = new Font("Times New Roman", Font.BOLD, 15);
+	JLabel j1;
+	JLabel j2;
+
+	JLabel groupmem;
+	JLabel groupmem1;
+	JLabel g21, g22, g23;
+
+	JLabel redline1;
+	JLabel redline2;
+
+	JLabel g1name, g2name, g3name;
+
+	JLabel u1, u2, u3, d1, d2, d3, d4;
+
+	JMenuBar jb;
+	JMenu m;
+	JMenuItem m1, exit, cfile;
+
+	JLabel cloud1, gm1, gfi1, gfi2, gfi3;
+
+	JLabel cloud2, gm2, gfo1, gfo2, gfo3;
+
+	JLabel blackup, blackup1, ug1, ug2, ug3;
+	JLabel blackdown, dg1, dg2, dg3;
+
+	String keyWord = "ef50a0ef2c3e3a5fdf803ae9752c8c66";
+
+	ImageIcon i1 = new ImageIcon(this.getClass().getResource("cloud1.jpg"));
+	ImageIcon i2 = new ImageIcon(this.getClass()
+			.getResource("groupmembers.jpg"));
+	ImageIcon i3 = new ImageIcon(this.getClass()
+			.getResource("groupfilesin.png"));
+	ImageIcon i4 = new ImageIcon(this.getClass().getResource(
+			"groupfilesout1.png"));
+
+	ImageIcon bu = new ImageIcon(this.getClass().getResource("blackup.png"));
+	ImageIcon gu = new ImageIcon(this.getClass().getResource("greenup.png"));
+
+	ImageIcon b11 = new ImageIcon(this.getClass().getResource("blackdown1.png"));
+	ImageIcon g11 = new ImageIcon(this.getClass().getResource("greendown1.png"));
+
+	ImageIcon b12 = new ImageIcon(this.getClass().getResource("blackdown2.png"));
+	ImageIcon g12 = new ImageIcon(this.getClass().getResource("greendown2.png"));
+
+	ImageIcon b13 = new ImageIcon(this.getClass().getResource("blackdown3.png"));
+	ImageIcon g13 = new ImageIcon(this.getClass().getResource("greendown3.png"));
+
+	ImageIcon bd = new ImageIcon(this.getClass().getResource("blackup1.png"));
+	ImageIcon gd = new ImageIcon(this.getClass().getResource("greenup1.png"));
+
+	ImageIcon bcgm = new ImageIcon(this.getClass().getResource("bcgm.png"));
+	ImageIcon gcgm = new ImageIcon(this.getClass().getResource("gcgm.png"));
+
+	ImageIcon bd2 = new ImageIcon(this.getClass().getResource("blackup2.png"));
+	ImageIcon gd2 = new ImageIcon(this.getClass().getResource("greenup2.png"));
+
+	ImageIcon bd3 = new ImageIcon(this.getClass().getResource("blackup3.png"));
+	ImageIcon gd3 = new ImageIcon(this.getClass().getResource("greenup3.png"));
+
+	ImageIcon red = new ImageIcon(this.getClass().getResource("red.png"));
+
+	IOTDeviceServer() {
+		c = getContentPane();
+		c.setLayout(null);
+
+		setTitle("IOT Device Server::Decentralized Lightweight Group Key Management for Dynamic Access Control in IoT Environments");
+
+		groupmem = new JLabel("Group Users");
+		groupmem.setFont(f3);
+		groupmem.setBounds(05, 410, 200, 100);
+		c.add(groupmem);
+
+		groupmem1 = new JLabel("Group Users");
+		groupmem1.setFont(f3);
+		groupmem1.setBounds(430, 410, 200, 100);
+		c.add(groupmem1);
+
+		g21 = new JLabel("Device Group1");
+		g21.setFont(f3);
+		g21.setBounds(700, 250, 150, 60);
+		c.add(g21);
+
+		ImageIcon banner = new ImageIcon(this.getClass().getResource(
+				"CloudServer.png"));
+		JLabel title = new JLabel();
+		title.setIcon(banner);
+		title.setBounds(0, -5, 850, 100);
+
+		g22 = new JLabel("Device Group2");
+		g22.setFont(f3);
+		g22.setBounds(700, 370, 150, 120);
+		c.add(g22);
+
+		g23 = new JLabel("Device Group3");
+		g23.setFont(f3);
+		g23.setBounds(700, 500, 150, 120);
+		c.add(g23);
+
+		g1name = new JLabel("Device Group1");
+		g1name.setFont(f3);
+		g1name.setBounds(300, 220, 150, 30);
+		c.add(g1name);
+
+		g2name = new JLabel("Device Group2");
+		g2name.setFont(f3);
+		g2name.setBounds(300, 370, 150, 30);
+		c.add(g2name);
+
+		g3name = new JLabel("Device Group3");
+		g3name.setFont(f3);
+		g3name.setBounds(300, 520, 150, 30);
+		c.add(g3name);
+
+		redline1 = new JLabel(); // redline uploading
+		redline1.setIcon(red);
+		redline1.setBounds(170, 245, 100, 300);
+		redline1.setVisible(false);
+		c.add(redline1);
+
+		redline2 = new JLabel();
+		redline2.setIcon(red);
+		redline2.setBounds(540, 245, 100, 300);
+		redline2.setVisible(false);
+		c.add(redline2);
+
+		blackup = new JLabel(); // uploading groupmember-to-cloud
+		blackup.setIcon(bu);
+		blackup.setBounds(40, 70, 200, 400);
+		c.add(blackup);
+
+		blackdown = new JLabel();// downloading cloud-groupmanager
+		blackdown.setIcon(bcgm);
+		blackdown.setBounds(400, 120, 200, 400);
+		c.add(blackdown);
+
+		blackup1 = new JLabel();// downloading groupmember-to-cloud
+		blackup1.setIcon(bu);
+		blackup1.setBounds(480, 70, 200, 400);
+		c.add(blackup1);
+
+		dg1 = new JLabel();// downloading group1-cloud
+		dg1.setIcon(bd);
+		dg1.setBounds(585, -35, 200, 400);
+		c.add(dg1);
+
+		dg2 = new JLabel();// downloading group2-cloud
+		dg2.setIcon(bd2);
+		dg2.setBounds(585, 50, 200, 400);
+		c.add(dg2);
+
+		dg3 = new JLabel();// downloading group3-cloud
+		dg3.setIcon(bd3);
+		dg3.setBounds(550, 150, 200, 400);
+		c.add(dg3);
+
+		ug1 = new JLabel();// uploading cloud-group1
+		ug1.setIcon(b11);
+		ug1.setBounds(240, 100, 130, 200);
+		c.add(ug1);
+
+		ug2 = new JLabel();// uploading cloud-group2
+		ug2.setIcon(b12);
+		ug2.setBounds(230, 160, 130, 200);
+		c.add(ug2);
+
+		ug3 = new JLabel();// uploading cloud-group3
+		ug3.setIcon(b13);
+		ug3.setBounds(230, 210, 150, 300);
+		c.add(ug3);
+
+		cloud1 = new JLabel();
+		cloud1.setIcon(i1);
+		cloud1.setBounds(100, 150, 200, 100);
+		c.add(cloud1);
+
+		gm1 = new JLabel();
+		gm1.setIcon(i2);
+		gm1.setBounds(05, 350, 200, 100);
+		c.add(gm1);
+
+		gfi1 = new JLabel();
+		gfi1.setIcon(i3);
+		gfi1.setBounds(300, 100, 120, 120);
+		c.add(gfi1);
+
+		gfi2 = new JLabel();
+		gfi2.setIcon(i3);
+		gfi2.setBounds(300, 250, 120, 120);
+		c.add(gfi2);
+
+		gfi3 = new JLabel();
+		gfi3.setIcon(i3);
+		gfi3.setBounds(300, 400, 120, 120);
+		c.add(gfi3);
+
+		cloud2 = new JLabel();
+		cloud2.setIcon(i1);
+		cloud2.setBounds(500, 150, 200, 100);
+		c.add(cloud2);
+
+		gm2 = new JLabel();
+		gm2.setIcon(i2);
+		gm2.setBounds(425, 350, 200, 100);
+		c.add(gm2);
+
+		gfo1 = new JLabel();
+		gfo1.setIcon(i4);
+		gfo1.setBounds(700, 150, 120, 120);
+		c.add(gfo1);
+
+		gfo2 = new JLabel();
+		gfo2.setIcon(i4);
+		gfo2.setBounds(700, 300, 120, 120);
+		c.add(gfo2);
+
+		gfo3 = new JLabel();
+		gfo3.setIcon(i4);
+		gfo3.setBounds(700, 450, 120, 120);
+		c.add(gfo3);
+
+		jb = new JMenuBar();
+		m = new JMenu("File");
+		m1 = new JMenuItem("Group Member Details");
+		m.add(m1);
+		cfile = new JMenuItem("View IOT Files");
+		m.add(cfile);
+		cfile.addActionListener(this);
+		m.add(cfile);
+
+		exit = new JMenuItem("Exit");
+		m.add(exit);
+
+		jb.add(m);
+
+		setJMenuBar(jb);
+		m1.addActionListener(this);
+
+		j1 = new JLabel("Data Storing ");
+		j1.setFont(f1);
+		j1.setBounds(50, 100, 200, 50);
+		c.add(j1);
+
+		u1 = new JLabel("Owner Does Not Exist In This Group");
+		u1.setFont(f2);
+		u1.setBounds(120, 525, 200, 50);
+		u1.setVisible(false);
+		c.add(u1);
+
+		u2 = new JLabel("Signature mis-match");
+		u2.setFont(f2);
+		u2.setBounds(120, 525, 200, 50);
+		u2.setVisible(false);
+		c.add(u2);
+
+		u3 = new JLabel("Revoked");
+		u3.setFont(f2);
+		u3.setBounds(120, 525, 200, 50);
+		u3.setVisible(false);
+		c.add(u3);
+
+		j2 = new JLabel("Data Accessing");
+		j2.setFont(f1);
+		j2.setBounds(500, 100, 200, 50);
+		c.add(j2);
+
+		d1 = new JLabel("Owner Does Not Exist In This Group");
+		d1.setFont(f2);
+		d1.setBounds(400, 550, 400, 50);
+		d1.setVisible(false);
+		c.add(d1);
+
+		d2 = new JLabel("signature mis-match");
+		d2.setFont(f2);
+		d2.setBounds(400, 550, 400, 50);
+		d2.setVisible(false);
+		c.add(d2);
+
+		d3 = new JLabel("Revoked");
+		d3.setFont(f2);
+		d3.setBounds(400, 550, 400, 50);
+		d3.setVisible(false);
+		c.add(d3);
+
+		d4 = new JLabel("Filename(or)groupname(or)key Does not match");
+		d4.setFont(f2);
+		d4.setBounds(400, 550, 400, 50);
+		d4.setVisible(false);
+		c.add(d4);
+		c.add(title);
+
+		exit.addActionListener(this);
+
+		setSize(860, 700);
+		setVisible(true);
+
+		int[] ports = new int[] { 401, 402, 403, 404, 405, 406, 407 };
+		for (int i = 0; i < 7; i++) {
+			Thread th = new Thread(new portlistener(ports[i]));
+			th.start();
+		}
+
+	}
+
+	public class portlistener implements Runnable {
+		int port;
+
+		portlistener(int port) {
+			this.port = port;
+		}
+
+		public void run() {
+
+			if (this.port == 407) {
+				try {
+					ServerSocket sc1 = new ServerSocket(407);
+					while (true) {
+						Socket s = sc1.accept();
+						DataInputStream dout1 = new DataInputStream(s
+								.getInputStream());
+						String name = dout1.readUTF();
+						String key = dout1.readUTF();
+						String groupnam = dout1.readUTF();
+
+						Dbcon db = new Dbcon();
+						Connection con = db.getConnection();
+						Statement stmt = con.createStatement();
+						String sql = "delete * from members where ownername='"
+								+ name + "' and group1='" + groupnam
+								+ "' and sk='" + key + "'";
+						int i = stmt.executeUpdate(sql);
+						if (i == 1) {
+
+							Statement stmt2 = con.createStatement();
+							String sql2 = "select * from cloudfiles where owner='"
+									+ name
+									+ "' and group1='"
+									+ groupnam
+									+ "' and key='" + key + "'";
+							ResultSet rs1 = stmt2.executeQuery(sql2);
+							while (rs1.next() == true) {
+								String filename4 = rs1.getString(1);
+								new File("Cloudfiles/" + groupnam + "/"
+										+ filename4 + ".txt").delete();
+							}
+
+							Statement stmt1 = con.createStatement();
+							String sql1 = "delete * from cloudfiles where owner='"
+									+ name
+									+ "' and group1='"
+									+ groupnam
+									+ "' and key='" + key + "'";
+							stmt1.executeUpdate(sql1);
+
+							DataOutputStream dout = new DataOutputStream(s
+									.getOutputStream());
+							dout.writeUTF("Success");
+
+						} else if (i == 2) {
+
+							DataOutputStream dout = new DataOutputStream(s
+									.getOutputStream());
+							dout.writeUTF("failure");
+						}
+
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (this.port == 406) {
+				try {
+					ServerSocket sc1 = new ServerSocket(406);
+					while (true) {
+						Socket s = sc1.accept();
+						DataInputStream dout1 = new DataInputStream(s
+								.getInputStream());
+						String fname = dout1.readUTF();
+						String gro = dout1.readUTF();
+
+						Dbcon db = new Dbcon();
+						Connection con = db.getConnection();
+						Statement stmt = con.createStatement();
+						String sql = "delete * from cloudfiles where filename='"
+								+ fname + "' and group1='" + gro + "'";
+						stmt.executeUpdate(sql);
+
+						new File("Cloudfiles/" + gro + "/" + fname + ".txt")
+								.delete();
+
+						DataOutputStream dout = new DataOutputStream(s
+								.getOutputStream());
+						dout.writeUTF("Delectd Successfully");
+
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+
+			if (this.port == 405) {
+				try {
+					ServerSocket sc1 = new ServerSocket(405);
+					while (true) {
+						Socket s = sc1.accept();
+						ObjectInputStream dout1 = new ObjectInputStream(s
+								.getInputStream());
+						String msg1 = (String) dout1.readObject();
+
+						ArrayList l1 = new ArrayList();
+						ArrayList l2 = new ArrayList();
+
+						Dbcon db = new Dbcon();
+						Connection con = db.getConnection();
+						Statement stmt = con.createStatement();
+
+						String sql1 = "select * from cloudfiles";
+						ResultSet rs = stmt.executeQuery(sql1);
+
+						while (rs.next() == true) {
+							String filename = rs.getString(1);
+							String groupname = rs.getString(2);
+
+							l1.add(filename);
+							l2.add(groupname);
+						}
+
+						ObjectOutputStream dout2 = new ObjectOutputStream(s
+								.getOutputStream());
+						dout2.writeObject(l1);
+						dout2.writeObject(l2);
+
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+
+			if (this.port == 404) {
+				try {
+					ServerSocket sc1 = new ServerSocket(404);
+					while (true) {
+						Socket s = sc1.accept();
+						DataInputStream din = new DataInputStream(s
+								.getInputStream());
+						String ownername1 = din.readUTF();
+						String groupname1 = din.readUTF();
+
+						Dbcon db = new Dbcon();
+						Connection con = db.getConnection();
+						Statement stmt = con.createStatement();
+						String sql = "update members set revoked='No' where ownername='"
+								+ ownername1
+								+ "' and group1='"
+								+ groupname1
+								+ "'";
+						stmt.executeUpdate(sql);
+
+						DataOutputStream dout = new DataOutputStream(s
+								.getOutputStream());
+						dout.writeUTF("revocation Removed successfully");
+
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+
+			if (this.port == 403) {
+				try {
+					ServerSocket sc1 = new ServerSocket(403);
+					while (true) {
+						Socket s = sc1.accept();
+						DataInputStream din = new DataInputStream(s
+								.getInputStream());
+						String ownername1 = din.readUTF();
+						String groupname1 = din.readUTF();
+
+						Dbcon db = new Dbcon();
+						Connection con = db.getConnection();
+						Statement stmt = con.createStatement();
+						String sql = "update members set revoked='revoked' where ownername='"
+								+ ownername1
+								+ "' and group1='"
+								+ groupname1
+								+ "'";
+						stmt.executeUpdate(sql);
+
+						DataOutputStream dout = new DataOutputStream(s
+								.getOutputStream());
+						dout.writeUTF("updated successfully");
+
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+
+			if (this.port == 402) {
+				try {
+					AES_Encryption_Decryption dec = new AES_Encryption_Decryption();
+
+					ServerSocket sc1 = new ServerSocket(402);
+					while (true) {
+						Socket s = sc1.accept();
+						DataInputStream din = new DataInputStream(s
+								.getInputStream());
+						String sign = din.readUTF();
+						String own = din.readUTF();
+						String filenam1 = din.readUTF();
+						String key1 = din.readUTF();
+						String groupnam = din.readUTF();
+
+						Dbcon db = new Dbcon();
+						Connection con = db.getConnection();
+						Statement stmt = con.createStatement();
+
+						blackup1.setVisible(false);
+						blackup1.setIcon(gu);
+						blackup1.setVisible(true);
+
+						j2.setVisible(false);
+						Thread.sleep(1000);
+						j2.setVisible(true);
+						Thread.sleep(1000);
+						j2.setVisible(false);
+						Thread.sleep(1000);
+						j2.setVisible(true);
+						Thread.sleep(1000);
+
+						String sql = "select * from members where ownername='"
+								+ own + "' and group1='" + groupnam + "'";
+						ResultSet rs = stmt.executeQuery(sql);
+
+						if (rs.next() == true) {
+
+							String sig = rs.getString(4);
+							if (sig.equals(sign)) {
+								String vol = rs.getString(5);
+								if (vol.equalsIgnoreCase("no")) {
+									Statement stmt1 = con.createStatement();
+									String sql1 = "select * from cloudfiles where filename='"
+											+ filenam1
+											+ "' and group1='"
+											+ groupnam
+											+ "' and key='"
+											+ key1
+											+ "'";
+
+									ResultSet rs1 = stmt1.executeQuery(sql1);
+
+									if (rs1.next() == true) {
+										if (groupnam.equalsIgnoreCase("group1")) {
+
+											gfo1.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(true);
+											Thread.sleep(1000);
+											gfo1.setVisible(true);
+											Thread.sleep(1000);
+											gfo1.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(true);
+											Thread.sleep(1000);
+											gfo1.setVisible(true);
+											Thread.sleep(1000);
+											gfo1.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(true);
+											Thread.sleep(1000);
+											gfo1.setVisible(true);
+											Thread.sleep(1000);
+											gfo1.setVisible(false);
+											Thread.sleep(1000);
+											gfo1.setVisible(true);
+											Thread.sleep(1000);
+											j2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(true);
+											Thread.sleep(1000);
+											gfo1.setVisible(false);
+											Thread.sleep(1000);
+											gfo1.setVisible(true);
+											Thread.sleep(1000);
+											j2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(true);
+											Thread.sleep(1000);
+											gfo1.setVisible(false);
+											Thread.sleep(1000);
+											gfo1.setVisible(true);
+											Thread.sleep(1000);
+											gfo1.setVisible(false);
+											Thread.sleep(1000);
+											gfo1.setVisible(true);
+											Thread.sleep(1000);
+
+											dg1.setVisible(false);
+											dg1.setIcon(gd);
+											dg1.setVisible(true);
+
+											blackdown.setVisible(false);
+											blackdown.setIcon(gcgm);
+											blackdown.setVisible(true);
+
+											Thread.sleep(3000);
+
+											blackup1.setVisible(false);
+											blackup1.setIcon(bu);
+											blackup1.setVisible(true);
+
+											Thread.sleep(1000);
+											dg1.setVisible(false);
+											dg1.setIcon(bd);
+											dg1.setVisible(true);
+											Thread.sleep(1000);
+											blackdown.setVisible(false);
+											blackdown.setIcon(bcgm);
+											blackdown.setVisible(true);
+
+										}
+
+										else if (groupnam
+												.equalsIgnoreCase("group2")) {
+											gfo2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(true);
+											Thread.sleep(1000);
+											gfo2.setVisible(true);
+											Thread.sleep(1000);
+											gfo2.setVisible(false);
+											Thread.sleep(1000);
+											gfo2.setVisible(true);
+											Thread.sleep(1000);
+											gfo2.setVisible(false);
+											Thread.sleep(1000);
+											gfo2.setVisible(true);
+											Thread.sleep(1000);
+											j2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(true);
+											Thread.sleep(1000);
+											gfo2.setVisible(false);
+											Thread.sleep(1000);
+											gfo2.setVisible(true);
+											Thread.sleep(1000);
+											gfo2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(true);
+											Thread.sleep(1000);
+											gfo2.setVisible(true);
+											Thread.sleep(1000);
+											gfo2.setVisible(false);
+											Thread.sleep(1000);
+											gfo2.setVisible(true);
+											Thread.sleep(1000);
+											j2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(true);
+											Thread.sleep(1000);
+											gfo2.setVisible(false);
+											Thread.sleep(1000);
+											gfo2.setVisible(true);
+											Thread.sleep(1000);
+
+											dg2.setVisible(false);
+											dg2.setIcon(gd2);
+											dg2.setVisible(true);
+
+											blackdown.setVisible(false);
+											blackdown.setIcon(gcgm);
+											blackdown.setVisible(true);
+
+											Thread.sleep(3000);
+
+											blackup1.setVisible(false);
+											blackup1.setIcon(bu);
+											blackup1.setVisible(true);
+
+											Thread.sleep(1000);
+											dg2.setVisible(false);
+											dg2.setIcon(bd2);
+											dg2.setVisible(true);
+											Thread.sleep(1000);
+											blackdown.setVisible(false);
+											blackdown.setIcon(bcgm);
+											blackdown.setVisible(true);
+
+										}
+
+										else if (groupnam
+												.equalsIgnoreCase("group3")) {
+											gfo3.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(true);
+											Thread.sleep(1000);
+											gfo3.setVisible(true);
+											Thread.sleep(1000);
+											gfo3.setVisible(false);
+											Thread.sleep(1000);
+											gfo3.setVisible(true);
+											Thread.sleep(1000);
+											gfo3.setVisible(false);
+											Thread.sleep(1000);
+											gfo3.setVisible(true);
+											Thread.sleep(1000);
+											gfo3.setVisible(false);
+											Thread.sleep(1000);
+											gfo3.setVisible(true);
+											Thread.sleep(1000);
+											gfo3.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(true);
+											Thread.sleep(1000);
+											gfo3.setVisible(true);
+											Thread.sleep(1000);
+											gfo3.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(false);
+											Thread.sleep(1000);
+											j2.setVisible(true);
+											Thread.sleep(1000);
+											gfo3.setVisible(true);
+											Thread.sleep(1000);
+											gfo3.setVisible(false);
+											Thread.sleep(1000);
+											gfo3.setVisible(true);
+											Thread.sleep(1000);
+
+											dg3.setVisible(false);
+											dg3.setIcon(gd3);
+											dg3.setVisible(true);
+
+											blackdown.setVisible(false);
+											blackdown.setIcon(gcgm);
+											blackdown.setVisible(true);
+
+											Thread.sleep(3000);
+
+											blackup1.setVisible(false);
+											blackup1.setIcon(bu);
+											blackup1.setVisible(true);
+
+											Thread.sleep(1000);
+											dg3.setVisible(false);
+											dg3.setIcon(bd3);
+											dg3.setVisible(true);
+											Thread.sleep(1000);
+											blackdown.setVisible(false);
+											blackdown.setIcon(bcgm);
+											blackdown.setVisible(true);
+
+										}
+
+										FileInputStream fin = new FileInputStream(
+												"cloudfiles/" + groupnam + "/"
+														+ filenam1 + ".txt");
+										byte[] b1 = new byte[fin.available()];
+										fin.read(b1);
+										String content = new String(b1);
+
+										DataOutputStream dout1 = new DataOutputStream(
+												s.getOutputStream());
+										dout1.writeUTF("success");
+										dout1.writeUTF(dec.decrypt(content,
+												keyWord));
+
+									} else if (rs1.next() == false) {
+										DataOutputStream dout1 = new DataOutputStream(
+												s.getOutputStream());
+										dout1.writeUTF("failure");
+
+										redline2.setVisible(true);
+										d4.setVisible(true);
+										Thread.sleep(1000);
+										d4.setVisible(false);
+										Thread.sleep(1000);
+										d4.setVisible(true);
+										Thread.sleep(1000);
+										d4.setVisible(false);
+										Thread.sleep(1000);
+										d4.setVisible(true);
+										Thread.sleep(1000);
+										d4.setVisible(false);
+										Thread.sleep(1000);
+										d4.setVisible(true);
+										Thread.sleep(1000);
+										d4.setVisible(false);
+										Thread.sleep(1000);
+										d4.setVisible(true);
+										Thread.sleep(1000);
+										d4.setVisible(false);
+										Thread.sleep(1000);
+										d4.setVisible(true);
+										Thread.sleep(1000);
+										d4.setVisible(false);
+										Thread.sleep(1000);
+										d4.setVisible(true);
+										Thread.sleep(1000);
+										d4.setVisible(false);
+										Thread.sleep(1000);
+
+										redline2.setVisible(false);
+
+										blackup1.setVisible(false);
+										blackup1.setIcon(bu);
+										blackup1.setVisible(true);
+
+									}
+
+								} else if (vol.equalsIgnoreCase("revoked")) {
+
+									redline2.setVisible(true);
+									d3.setVisible(true);
+									Thread.sleep(1000);
+									d3.setVisible(false);
+									Thread.sleep(1000);
+									d3.setVisible(true);
+									Thread.sleep(1000);
+									d3.setVisible(false);
+									Thread.sleep(1000);
+									d3.setVisible(true);
+									Thread.sleep(1000);
+									d3.setVisible(false);
+									Thread.sleep(1000);
+									d3.setVisible(true);
+									Thread.sleep(1000);
+									d3.setVisible(false);
+									Thread.sleep(1000);
+									d3.setVisible(true);
+									Thread.sleep(1000);
+									d3.setVisible(false);
+									Thread.sleep(1000);
+									d3.setVisible(true);
+									Thread.sleep(1000);
+									d3.setVisible(false);
+									Thread.sleep(1000);
+									d3.setVisible(true);
+									Thread.sleep(1000);
+									d3.setVisible(false);
+									Thread.sleep(1000);
+
+									redline2.setVisible(false);
+
+									blackup1.setVisible(false);
+									blackup1.setIcon(bu);
+									blackup1.setVisible(true);
+
+									DataOutputStream dout1 = new DataOutputStream(
+											s.getOutputStream());
+									dout1.writeUTF("revoked");
+
+								}
+
+							} else {
+								redline2.setVisible(true);
+								d2.setVisible(true);
+								Thread.sleep(1000);
+								d2.setVisible(false);
+								Thread.sleep(1000);
+								d2.setVisible(true);
+								Thread.sleep(1000);
+								d2.setVisible(false);
+								Thread.sleep(1000);
+								d2.setVisible(true);
+								Thread.sleep(1000);
+								d2.setVisible(false);
+								Thread.sleep(1000);
+								d2.setVisible(true);
+								Thread.sleep(1000);
+								d2.setVisible(false);
+								Thread.sleep(1000);
+								d2.setVisible(true);
+								Thread.sleep(1000);
+								d2.setVisible(false);
+								Thread.sleep(1000);
+								d2.setVisible(true);
+								Thread.sleep(1000);
+								d2.setVisible(false);
+								Thread.sleep(1000);
+								d2.setVisible(true);
+								Thread.sleep(1000);
+								d2.setVisible(false);
+								Thread.sleep(1000);
+
+								redline2.setVisible(false);
+
+								blackup1.setVisible(false);
+								blackup1.setIcon(bu);
+								blackup1.setVisible(true);
+
+								DataOutputStream dout1 = new DataOutputStream(s
+										.getOutputStream());
+								dout1.writeUTF("sig mis-match");
+							}
+
+						} else if (rs.next() == false) {
+
+							redline2.setVisible(true);
+							d1.setVisible(true);
+							Thread.sleep(1000);
+							d1.setVisible(false);
+							Thread.sleep(1000);
+							d1.setVisible(true);
+							Thread.sleep(1000);
+							d1.setVisible(false);
+							Thread.sleep(1000);
+							d1.setVisible(true);
+							Thread.sleep(1000);
+							d1.setVisible(false);
+							Thread.sleep(1000);
+							d1.setVisible(true);
+							Thread.sleep(1000);
+							d1.setVisible(false);
+							Thread.sleep(1000);
+							d1.setVisible(true);
+							Thread.sleep(1000);
+							d1.setVisible(false);
+							Thread.sleep(1000);
+							d1.setVisible(true);
+							Thread.sleep(1000);
+							d1.setVisible(false);
+							Thread.sleep(1000);
+							d1.setVisible(true);
+							Thread.sleep(1000);
+							d1.setVisible(false);
+							Thread.sleep(1000);
+
+							redline2.setVisible(false);
+
+							blackup1.setVisible(false);
+							blackup1.setIcon(bu);
+							blackup1.setVisible(true);
+
+							DataOutputStream dout1 = new DataOutputStream(s
+									.getOutputStream());
+							dout1
+									.writeUTF("Owner Does Not Exist In This Group");
+						}
+
+					}
+
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+
+			if (this.port == 401) {
+				try {
+					ServerSocket sc = new ServerSocket(401);
+					while (true) {
+						Socket s = sc.accept();
+						DataInputStream din = new DataInputStream(s
+								.getInputStream());
+						String msg = din.readUTF();
+						if (msg.equalsIgnoreCase("check")) {
+							blackup.setVisible(false);
+							blackup.setIcon(gu);
+							blackup.setVisible(true);
+
+							j1.setVisible(false);
+							Thread.sleep(1000);
+							j1.setVisible(true);
+							Thread.sleep(1000);
+							j1.setVisible(false);
+							Thread.sleep(1000);
+							j1.setVisible(true);
+							Thread.sleep(1000);
+
+							String sig = din.readUTF();
+							String own = din.readUTF();
+							String groupnam = din.readUTF();
+
+							Dbcon db = new Dbcon();
+							Connection con = db.getConnection();
+							Statement stmt = con.createStatement();
+
+							String sql = "select * from members where ownername='"
+									+ own + "' and group1='" + groupnam + "'";
+							ResultSet rs = stmt.executeQuery(sql);
+
+							if (rs.next() == true) {
+								String csig = rs.getString(4);
+								if (csig.equals(sig)) {
+									String cvol = rs.getString(5);
+
+									if (cvol.equalsIgnoreCase("No")) {
+
+										DataOutputStream dout = new DataOutputStream(
+												s.getOutputStream());
+										dout.writeUTF("success");
+
+									} else if (cvol.equalsIgnoreCase("revoked")) {
+										DataOutputStream dout = new DataOutputStream(
+												s.getOutputStream());
+										dout.writeUTF("revoked");
+
+										redline1.setVisible(true);
+										Thread.sleep(1000);
+										u3.setVisible(true);
+										Thread.sleep(1000);
+										u3.setVisible(false);
+										Thread.sleep(1000);
+										u3.setVisible(true);
+										Thread.sleep(1000);
+										u3.setVisible(false);
+										Thread.sleep(1000);
+										u3.setVisible(true);
+										Thread.sleep(1000);
+										u3.setVisible(false);
+										Thread.sleep(1000);
+										u3.setVisible(true);
+										Thread.sleep(1000);
+										u3.setVisible(false);
+										Thread.sleep(1000);
+										u3.setVisible(true);
+										Thread.sleep(1000);
+										u3.setVisible(false);
+										Thread.sleep(1000);
+										u3.setVisible(true);
+										Thread.sleep(1000);
+										u3.setVisible(false);
+										Thread.sleep(1000);
+										u3.setVisible(true);
+										Thread.sleep(1000);
+										u3.setVisible(false);
+										Thread.sleep(1000);
+
+										redline1.setVisible(false);
+
+									}
+
+								} else {
+									DataOutputStream dout = new DataOutputStream(
+											s.getOutputStream());
+									dout.writeUTF("sig mis-match");
+
+									redline1.setVisible(true);
+									Thread.sleep(1000);
+									u2.setVisible(true);
+									Thread.sleep(1000);
+									u2.setVisible(false);
+									Thread.sleep(1000);
+									u2.setVisible(true);
+									Thread.sleep(1000);
+									u2.setVisible(false);
+									Thread.sleep(1000);
+									u2.setVisible(true);
+									Thread.sleep(1000);
+									u2.setVisible(false);
+									Thread.sleep(1000);
+									u2.setVisible(true);
+									Thread.sleep(1000);
+									u2.setVisible(false);
+									Thread.sleep(1000);
+									u2.setVisible(true);
+									Thread.sleep(1000);
+									u2.setVisible(false);
+									Thread.sleep(1000);
+									u2.setVisible(true);
+									Thread.sleep(1000);
+									u2.setVisible(false);
+									Thread.sleep(1000);
+									u2.setVisible(true);
+									Thread.sleep(1000);
+									u2.setVisible(false);
+									Thread.sleep(1000);
+
+									redline1.setVisible(false);
+
+								}
+							} else {
+								DataOutputStream dout = new DataOutputStream(s
+										.getOutputStream());
+								dout.writeUTF("name group mis-match");
+
+								redline1.setVisible(true);
+								Thread.sleep(1000);
+								u1.setVisible(true);
+								Thread.sleep(1000);
+								u1.setVisible(false);
+								Thread.sleep(1000);
+								u1.setVisible(true);
+								Thread.sleep(1000);
+								u1.setVisible(false);
+								Thread.sleep(1000);
+								u1.setVisible(true);
+								Thread.sleep(1000);
+								u1.setVisible(false);
+								Thread.sleep(1000);
+								u1.setVisible(true);
+								Thread.sleep(1000);
+								u1.setVisible(false);
+								Thread.sleep(1000);
+								u1.setVisible(true);
+								Thread.sleep(1000);
+								u1.setVisible(false);
+								Thread.sleep(1000);
+								u1.setVisible(true);
+								Thread.sleep(1000);
+								u1.setVisible(false);
+								Thread.sleep(1000);
+								u1.setVisible(true);
+								Thread.sleep(1000);
+								u1.setVisible(false);
+								Thread.sleep(1000);
+
+								redline1.setVisible(false);
+
+							}
+
+						} else if (msg.equalsIgnoreCase("upload")) {
+							String own = din.readUTF();
+							String filename1 = din.readUTF();
+							String content = din.readUTF();
+							String gname = din.readUTF();
+							String key = din.readUTF();
+
+							if (gname.equalsIgnoreCase("group1")) {
+								ug1.setVisible(false);
+								ug1.setIcon(g11);
+								ug1.setVisible(true);
+
+								gfi1.setVisible(false);
+								Thread.sleep(1000);
+								gfi1.setVisible(true);
+								Thread.sleep(1000);
+								j1.setVisible(false);
+								Thread.sleep(1000);
+								j1.setVisible(true);
+								Thread.sleep(1000);
+								gfi1.setVisible(false);
+								Thread.sleep(1000);
+								gfi1.setVisible(true);
+								Thread.sleep(1000);
+								gfi1.setVisible(false);
+								Thread.sleep(1000);
+								gfi1.setVisible(true);
+								Thread.sleep(1000);
+								gfi1.setVisible(false);
+								Thread.sleep(1000);
+								gfi1.setVisible(true);
+								Thread.sleep(1000);
+								j1.setVisible(false);
+								Thread.sleep(1000);
+								j1.setVisible(true);
+								Thread.sleep(1000);
+								gfi1.setVisible(false);
+								Thread.sleep(1000);
+								gfi1.setVisible(true);
+								Thread.sleep(1000);
+								gfi1.setVisible(false);
+								Thread.sleep(1000);
+								gfi1.setVisible(true);
+								Thread.sleep(1000);
+								j1.setVisible(false);
+								Thread.sleep(1000);
+								j1.setVisible(true);
+								Thread.sleep(1000);
+								gfi1.setVisible(false);
+								Thread.sleep(1000);
+								gfi1.setVisible(true);
+								Thread.sleep(1000);
+
+							}
+
+							if (gname.equalsIgnoreCase("group2")) {
+								ug2.setVisible(false);
+								ug2.setIcon(g12);
+								ug2.setVisible(true);
+
+								gfi2.setVisible(false);
+								Thread.sleep(1000);
+								gfi2.setVisible(true);
+								Thread.sleep(1000);
+								j1.setVisible(false);
+								Thread.sleep(1000);
+								j1.setVisible(true);
+								Thread.sleep(1000);
+								gfi2.setVisible(false);
+								Thread.sleep(1000);
+								gfi2.setVisible(true);
+								Thread.sleep(1000);
+								gfi2.setVisible(false);
+								Thread.sleep(1000);
+								gfi2.setVisible(true);
+								Thread.sleep(1000);
+								gfi2.setVisible(false);
+								Thread.sleep(1000);
+								gfi2.setVisible(true);
+								Thread.sleep(1000);
+								j1.setVisible(false);
+								Thread.sleep(1000);
+								j1.setVisible(true);
+								Thread.sleep(1000);
+								gfi2.setVisible(false);
+								Thread.sleep(1000);
+								gfi2.setVisible(true);
+								Thread.sleep(1000);
+								gfi2.setVisible(false);
+								Thread.sleep(1000);
+								gfi2.setVisible(true);
+								Thread.sleep(1000);
+								gfi2.setVisible(false);
+								Thread.sleep(1000);
+								gfi2.setVisible(true);
+								Thread.sleep(1000);
+
+							}
+
+							if (gname.equalsIgnoreCase("group3")) {
+
+								ug3.setVisible(false);
+								ug3.setIcon(g13);
+								ug3.setVisible(true);
+
+								gfi3.setVisible(false);
+								Thread.sleep(1000);
+								gfi3.setVisible(true);
+								Thread.sleep(1000);
+								j1.setVisible(false);
+								Thread.sleep(1000);
+								j1.setVisible(true);
+								Thread.sleep(1000);
+								gfi3.setVisible(false);
+								Thread.sleep(1000);
+								gfi3.setVisible(true);
+								Thread.sleep(1000);
+								gfi3.setVisible(false);
+								Thread.sleep(1000);
+								gfi3.setVisible(true);
+								Thread.sleep(1000);
+								gfi3.setVisible(false);
+								Thread.sleep(1000);
+								gfi3.setVisible(true);
+								Thread.sleep(1000);
+								gfi3.setVisible(false);
+								Thread.sleep(1000);
+								gfi3.setVisible(true);
+								Thread.sleep(1000);
+								j1.setVisible(false);
+								Thread.sleep(1000);
+								j1.setVisible(true);
+								Thread.sleep(1000);
+								gfi3.setVisible(false);
+								Thread.sleep(1000);
+								gfi3.setVisible(true);
+								Thread.sleep(1000);
+								gfi3.setVisible(false);
+								Thread.sleep(1000);
+								gfi3.setVisible(true);
+								Thread.sleep(1000);
+
+							}
+
+							new File("Cloudfiles/" + gname).mkdir();
+
+							PrintStream ps = new PrintStream(
+									new FileOutputStream("Cloudfiles/" + gname
+											+ "/" + filename1 + ".txt"));
+							ps.print(content);
+							ps.close();
+
+							Dbcon db = new Dbcon();
+							Connection con = db.getConnection();
+							Statement stmt = con.createStatement();
+							String sql = "insert into cloudfiles values('"
+									+ filename1 + "','" + gname + "','" + key
+									+ "','" + own + "')";
+							stmt.executeUpdate(sql);
+
+							DataOutputStream dout = new DataOutputStream(s
+									.getOutputStream());
+							dout.writeUTF("file uploaded successfully");
+
+							ug1.setVisible(false);
+							ug1.setIcon(b11);
+							ug1.setVisible(true);
+
+							ug2.setVisible(false);
+							ug2.setIcon(b12);
+							ug2.setVisible(true);
+
+							ug3.setVisible(false);
+							ug3.setIcon(b13);
+							ug3.setVisible(true);
+
+							Thread.sleep(1000);
+
+							blackup.setVisible(false);
+							blackup.setIcon(bu);
+							blackup.setVisible(true);
+
+						}
+
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == exit) {
+			System.exit(0);
+		}
+		if (e.getSource() == cfile) {
+			FilesinIOTServer csf = new FilesinIOTServer();
+			csf.setSize(500, 500);
+			csf.setVisible(true);
+
+		}
+
+		if (e.getSource() == m1) {
+			try {
+				String ip = JOptionPane
+						.showInputDialog("Enter Group-Manager IP");
+
+				Socket sc = new Socket(ip, 303);
+				ObjectOutputStream dout = new ObjectOutputStream(sc
+						.getOutputStream());
+				dout.writeObject("Send");
+
+				ObjectInputStream din = new ObjectInputStream(sc
+						.getInputStream());
+
+				ArrayList a1 = (ArrayList) din.readObject();
+				ArrayList a2 = (ArrayList) din.readObject();
+				ArrayList a3 = (ArrayList) din.readObject();
+				ArrayList a4 = (ArrayList) din.readObject();
+				ArrayList a5 = (ArrayList) din.readObject();
+
+				Iterator i1 = a1.iterator();
+				Iterator i2 = a2.iterator();
+				Iterator i3 = a3.iterator();
+				Iterator i4 = a4.iterator();
+				Iterator i5 = a5.iterator();
+
+				while (i1.hasNext()) {
+					if (i2.hasNext()) {
+						if (i3.hasNext()) {
+							if (i4.hasNext()) {
+								if (i5.hasNext()) {
+									String owner = (String) i1.next();
+									String group1 = (String) i2.next();
+									String sk = (String) i3.next();
+									String sig = (String) i4.next();
+									String rev = (String) i5.next();
+
+									System.out.println();
+
+									Dbcon db = new Dbcon();
+									Connection con = db.getConnection();
+									Statement stmt = con.createStatement();
+									String sql = "select * from members where ownername='"
+											+ owner
+											+ "' and group1='"
+											+ group1
+											+ "'";
+									ResultSet rs = stmt.executeQuery(sql);
+
+									if (rs.next() == true) {
+
+									} else if (rs.next() == false) {
+										Statement stmt1 = con.createStatement();
+										String sql1 = "insert into members values('"
+												+ owner
+												+ "','"
+												+ group1
+												+ "','"
+												+ sk
+												+ "','"
+												+ sig
+												+ "','" + rev + "')";
+										stmt1.executeUpdate(sql1);
+									}
+
+								}
+							}
+						}
+					}
+				}
+
+				new Viewmembers();
+
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+
+	}
+
+	public static void main(String[] args) {
+		new IOTDeviceServer();
+	}
+
+}

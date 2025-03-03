@@ -1,0 +1,12 @@
+Dynamic Secure Access Control and Data Sharing Through Trusted Delegation and Revocation in a Blockchain-Enabled Cloud-IoT Environment
+
+
+IOT Device --Data Owners
+
+IOT Users  -- Data Users
+
+Gateway -- Capturing Attacks
+
+Edge Nodes -- To Provide access Control
+
+Cloud Node -- Data Storage
